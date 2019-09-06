@@ -17,7 +17,10 @@ conditionInfo(iCond).trialFun=@MoveLineTrial;
 conditionInfo(iCond).type             = '2afc'; 
 conditionInfo(iCond).stimType         = condStimTypes{iCond};
 conditionInfo(iCond).stimDurationSection1 = 0; %approximate stimulus duration in seconds
-conditionInfo(iCond).stimDurationSection2 = 0.5;
+conditionInfo(iCond).stimDurationSection2 = 0.5; %this is given here, but this value is not used. 
+%stimulus duration is actually determined within the trial file for this condition -
+%MoveLineTrial. Durations are determined by using a set number of frames.
+
 conditionInfo(iCond).fixedDistance = true;
 conditionInfo(iCond).durationCatch = false;
 conditionInfo(iCond).preStimDuration  = 0.25;  %Static time before stimulus change

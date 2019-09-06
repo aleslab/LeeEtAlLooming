@@ -43,6 +43,7 @@ function [trialData] = MoveLineTrial(expInfo, conditionInfo)
 trialData.validTrial = false;
 trialData.abortNow   = false;
 
+%set up for creating stimulus movies 
 if isfield(expInfo,'writeMovie') && expInfo.writeMovie
     
     thisFilename = ['myMovie_', conditionInfo.label, '_', conditionInfo.movieString, '.mov'];
@@ -55,6 +56,8 @@ end
 
 movieRect = Screen('Rect', expInfo.curWindow);
 movieRect = movieRect*2;
+
+
 
 expInfo.lw = 1;
 fixationInfo(1).type    = 'cross';
@@ -83,23 +86,31 @@ nFramesSection1 = round(conditionInfo.stimDurationSection1 / expInfo.ifi);
 nFramesSection2 = round(conditionInfo.stimDurationSection2/ expInfo.ifi);
 nFramesTotal = nFramesPreStim + nFramesSection1 + nFramesSection2;
 trialData.nMovingFramesDispd = nFramesSection2;
-%number of frames displayed during JMA: added round because  it needs to be
-%an integer. the duration (in seconds) that is specified
+%number of frames displayed during the duration (in seconds) that is specified
 
 %this section should only be used with the monocular fast speeds and the
 %second set of speeds for the standardised value to be correct.
 
+%hardcoded values -these may need to change on different setups 
+
+%used to match the durations of one type of catch trial between the two
+%speed disc conditions
 if isfield(conditionInfo, 'durationCatch') && conditionInfo.durationCatch
     velCmPerFrameSection2 = conditionInfo.velocityCmPerSecSection2*expInfo.ifi;
     nFramesInterval = 41; %HARDCODED FOR USE ON LAB COMPUTER
     trialData.nMovingFramesDispd = nFramesInterval;
     velCmPerFrameSection2 = conditionInfo.velocityCmPerSecSection2*expInfo.ifi;
     
+    
+    %code used to determine the duration of the stimulus presentation in
+    %the fixedDistance condition (referred to as 'Duration' in the paper)
 elseif isfield(conditionInfo, 'fixedDistance') && conditionInfo.fixedDistance
     
     velCmPerFrameSection2 = conditionInfo.velocityCmPerSecSection2*expInfo.ifi;
     
-    standardvelPerFrame = -0.6667; %hardcoded, only works with monocular fast speeds!
+    standardvelPerFrame = -0.6667; %hardcoded, for use on the lab computer with a frame rate of 65Hz. 
+    %Untested on other setups and only works with our monocular fast speeds!
+    
     normalisedVelPerFrame = velCmPerFrameSection2/standardvelPerFrame;
     nFramesInterval = round((nFramesSection1 + nFramesSection2)/normalisedVelPerFrame);
     trialData.nMovingFramesDispd = nFramesInterval;
@@ -132,7 +143,7 @@ frameIdx = 1;
 expInfo.startingDepth = expInfo.viewingDistance + conditionInfo.depthStart;
 
 %% Choosing and running the stimulus -- Stereo only (single line)
-if strcmp(conditionInfo.stimType, 'cd'); %%strcmp seems to work better than == for this.
+if strcmp(conditionInfo.stimType, 'cd'); %strcmp seems to work better than == for this.
     %Checking if the stimulus type is CD only.
     % Changing disparity stimulus -- single vertical line for each eye
     objectStart = [conditionInfo.startPos, 0, expInfo.startingDepth];
@@ -1142,6 +1153,8 @@ expInfo = drawFixation(expInfo, fixationInfo);
 
 Screen('Flip', expInfo.curWindow); %the final necessary flip.
 
+
+%movie finalisation if included
 if isfield(expInfo,'writeMovie') && expInfo.writeMovie
     Screen('AddFrameToMovie', expInfo.curWindow,...
         movieRect);
