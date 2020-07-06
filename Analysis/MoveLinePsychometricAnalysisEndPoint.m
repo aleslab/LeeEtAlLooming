@@ -4,10 +4,9 @@ dataDir = uigetdir();
 cd(dataDir)
 
 %participantCodes = {'AA' 'AB' 'AD' 'AG' 'AH' 'AE'  'AI' 'AL'}; % participants in speed discrimination conditions
-%participantCodes = {'M' 'O' 'Q' 'R' 'S' 'T' 'U' 'V' 'W' 'X' 'Y' 'AL'}; % participants in speed
+participantCodes = {'M' 'O' 'Q' 'R' 'S' 'T' 'U' 'V' 'W' 'X' 'Y' }; %'AL' participants in speed
 %change discrimination conditions
 
-participantCodes = {'AB'};
 ParOrNonPar = 2; %non-parametric bootstrap for all
 BootNo = 1000; %number of simulations for all bootstraps and goodness of fits
 
@@ -19,17 +18,13 @@ for iParticipant = 1:length(participantCodes)
     %binocular cues to motion in depth, and those containing both looming
     %and binocular cues
     
-    %     conditionList = {'MoveLine_accelerating_depth_midspeed'; ...
-    %         'MoveLine_accelerating_depth_slow'; 'MoveLine_accelerating_looming_midspeed'; ...
-    %         'MoveLine_accelerating_looming_slow'; 'MoveLine_accelerating_cd_midspeed'; ...
-    %         'MoveLine_accelerating_cd_slow'};
+        conditionList = {'MoveLine_accelerating_looming_midspeed'};
     
     %speed discrimination conditions
     %conditionList = {'SpeedDisc_fixed_duration'; 'SpeedDisc_fixed_distance'};
-    conditionList = {'SpeedDisc_fixed_duration'};
     
-    %analysisType = {'real_world_change'}; %'real_world_change' for speed change discrimination task
-    analysisType = {'real_world_difference'}; % real_world_difference for
+    analysisType = {'real_world_change_endpoint'}; %'real_world_change' for speed change discrimination task
+    %analysisType = {'real_world_difference'}; % real_world_difference for
     %speed discrimination task
     
     for iAnalysis = 1:length(analysisType)
@@ -124,6 +119,12 @@ for iParticipant = 1:length(participantCodes)
                     
                 end
                 
+            elseif strcmp(currAnalysisType, 'real_world_change_endpoint')
+                
+                xLabelTitle  = 'Speed difference between standard and test at end of interval (cm/s)';
+                
+                speedDiff = [0 5 10 15 20 25 30];
+                
             end
             %% Psychometric function fitting adapted from PAL_PFML_Demo
             
@@ -201,13 +202,13 @@ for iParticipant = 1:length(participantCodes)
             ylabel('proportion correct', 'FontSize', 12);
             %title(condAndParticipant, 'interpreter', 'none');
             
-            %figFileName = strcat('psychometric_', currAnalysisType, '_', condAndParticipant, '.pdf');
-            %saveas(gcf, figFileName);
+            figFileName = strcat('psychometric_', currAnalysisType, '_', condAndParticipant, '.pdf');
+            saveas(gcf, figFileName);
             
-            fig = gcf;
-            fig.PaperUnits = 'inches';
-            fig.PaperPosition = [0 0 2.5 2.5];
-            print('speedDurExFunction','-dpdf','-r0')
+%             fig = gcf;
+%             fig.PaperUnits = 'inches';
+%             fig.PaperPosition = [0 0 2.5 2.5];
+%             print('speedDurExFunction','-dpdf','-r0')
             
             if strcmp(currAnalysisType, 'real_world_difference');
                 
